@@ -5,6 +5,12 @@
 #include "sensesp_app.h"
 #include "wiring_helpers.h"
 
+#ifdef ESP8266
+#define RXPIN D7
+#elif defined(ESP32)
+#define RXPIN 25
+#endif
+
 ReactESP app([] () {
   sensesp_app = new SensESPApp();
 
@@ -20,7 +26,7 @@ ReactESP app([] () {
 
   // Software serial port is used for receiving NMEA data
 
-  SoftwareSerial* swSerial = new SoftwareSerial(D7, -1);
+  SoftwareSerial* swSerial = new SoftwareSerial(RXPIN, -1);
   swSerial->begin(38400, SWSERIAL_8N1);
   
   setup_gps(swSerial);
