@@ -27,7 +27,7 @@ ReactESP app([] () {
   // Software serial port is used for receiving NMEA data
 
   SoftwareSerial* swSerial = new SoftwareSerial(RXPIN, -1);
-  swSerial->begin(38400, SWSERIAL_8N1);
+  swSerial->begin(115200, SWSERIAL_8N1);
   
   setup_gps(swSerial);
 
