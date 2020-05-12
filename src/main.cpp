@@ -1,15 +1,20 @@
 #include <Arduino.h>
 
-#include "SoftwareSerial.h"
+#include "HardwareSerial.h"
 
 #include "sensesp_app.h"
 #include "wiring_helpers.h"
+#include <Wire.h>
 
 #ifdef ESP8266
 #define RXPIN D7
 #elif defined(ESP32)
-#define RXPIN 25
+#define RXPIN RX2
 #endif
+
+TwoWire* twoWire;
+HardwareSerial* hwSerial;
+
 
 ReactESP app([] () {
   sensesp_app = new SensESPApp();
@@ -26,10 +31,23 @@ ReactESP app([] () {
 
   // Software serial port is used for receiving NMEA data
 
-  SoftwareSerial* swSerial = new SoftwareSerial(RXPIN, -1);
-  swSerial->begin(115200, SWSERIAL_8N1);
+  hwSerial = new HardwareSerial(2);
+  hwSerial->begin(38400);
+
+  //pinMode(LED_BUILTIN, OUTPUT);
+  delay(100);
+
+  //hwSerial->println("$PMTK220,1000*1F");
+  //hwSerial->println("$PMTK251,38400*27");
+  //hwSerial->flush();
+
+  /*app.onRepeat(1, [] () {
+     if(hwSerial->available()) {
+       Serial.print(char(hwSerial->read()));
+     }
+   });*/
   
-  setup_gps(swSerial);
+  setup_gps(hwSerial);
 
   sensesp_app->enable();
 });
